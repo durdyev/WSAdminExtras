@@ -1,0 +1,20 @@
+This little server should help you to work with Websphere Application Server.
+
+Usage:
+cd bin
+python createProfile.py -profileName simple
+
+then you should configure simple profile.
+
+python startServer.py
+
+This version is not working yet and in active development stage.
+Stay tuned.
+
+At goal:
+-deploy to server throw wsadmin and jython.
+-stop/start server
+-stop/start operating system services
+-clear server logs
+-hot deployment
+-maven plugin
