@@ -135,6 +135,7 @@ class RequestEventHandler(RequestHandler):
                     profile_temp_path = '../profiles/' + self.profile + '/tmp/'
                     files = os.listdir(profile_temp_path)
                     for file in files:
+                        # uninstall
                         abs_file_path = os.path.abspath(profile_temp_path + file)
                         file_name = os.path.splitext(file)[0]
                         command = self._jython_win + " "
@@ -143,11 +144,25 @@ class RequestEventHandler(RequestHandler):
                         command += parameters['port'] + " "
                         command += parameters['username'] + " "
                         command += parameters['password'] + " "
-                        command += parameters['mode'] + " "
+                        command += self._additional_params.mode_uninstall + " "
                         command += abs_file_path + " "
                         command += file_name + " "
-                        command += '"[ [] ]"'
-                        print(command)
+                        command += ' "[ ]" '
+                        os.system(command)
+
+                        # install
+                        abs_file_path = os.path.abspath(profile_temp_path + file)
+                        file_name = os.path.splitext(file)[0]
+                        command = self._jython_win + " "
+                        command += parameters['was_home'] + " "
+                        command += parameters['host'] + " "
+                        command += parameters['port'] + " "
+                        command += parameters['username'] + " "
+                        command += parameters['password'] + " "
+                        command += self._additional_params.mode_install + " "
+                        command += abs_file_path + " "
+                        command += file_name + " "
+                        command += ' "[-name %s ]" ' % file_name
                         os.system(command)
             except IOError as e:
                 logging.info(e.strerror)

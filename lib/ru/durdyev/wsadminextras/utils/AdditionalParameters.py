@@ -16,3 +16,11 @@ class AdditionalParameters(object):
     @property
     def mode_reinstall(self):
         return "Reinstall"
+
+    @property
+    def mode_uninstall(self):
+        return "UNINSTALL"
+
+    @property
+    def mode_install(self):
+        return "INSTALL"
