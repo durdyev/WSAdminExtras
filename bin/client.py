@@ -35,7 +35,7 @@ def main():
         connection = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         connection.connect((HOST, PORT))
         basename = os.path.basename(file_url)
-        filename, filetype = basename.split('.')
+        filename, filetype = os.path.splitext(basename)
 
         f = open(file_url, 'rb')
 
@@ -52,7 +52,8 @@ def main():
 
     # if command is deploy
     if key == '-deploy':
-        deploy_file_list = sys.argv[2]
+        profile_name = sys.argv[2]
+        deploy_file_list = sys.argv[3]
 
         connection = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         connection.connect((HOST, PORT))
@@ -60,9 +61,10 @@ def main():
         request_content = str(deploy_file_list)
 
         request_data = "Command:DEPLOY" + delim_n
-        request_data += "Profile:SimpleProfile" + delim_n
+        request_data += "Profile:" + profile_name + delim_n
         request_data += "Content-length:" + str(len(request_content)) + delim_n
         request_data += "Content-type: plain-text"
+        request_data += "Mode: Reinstall"
         request_data += ' ' * (server_headers.headers_len - len(request_data))
         connection.sendall(request_data)
         connection.sendall(request_content)

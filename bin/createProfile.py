@@ -19,6 +19,7 @@ import sys
 sys.path.append("../lib")
 import  logging
 import baseFunc
+from xml.dom.minidom import Document
 
 #ru.durdyev.* packages and classes
 from ru.durdyev.wsadminextras.server import BaseProfiler

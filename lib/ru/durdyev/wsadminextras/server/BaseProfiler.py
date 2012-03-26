@@ -17,15 +17,10 @@ import os
 from xml.dom.minidom import Document
 
 # profile manager class
-# @author idurdyev
 
 class BaseProfiler(object):
     #profile directory
     _profile_dir = '../profiles/'
-    #config directory
-    _profile_config_dir = _profile_dir + '/config'
-    #tmp directory
-    _profile_temp_dir = _profile_dir + '/tmp'
 
     def __init__(self, profile_name):
         self.create_profile(profile_name)
@@ -38,12 +33,55 @@ class BaseProfiler(object):
             try:
                 self._profile_dir += profile_name
                 os.makedirs(self._profile_dir)
-                os.makedirs(self._profile_config_dir)
-                os.makedirs(self._profile_temp_dir)
+                os.makedirs(self._profile_dir + '/config')
+                os.makedirs(self._profile_dir + '/tmp')
             except OSError as e:
                 logging.warn('Error. profile with name %s is exists' % profile_name)
                 print('Can\'t create profile. Profile with same name is exists.',\
                       'Try to create profile with another name')
 
     def create_configuration_files(self, profile_name):
-        doc = Document()
+        try:
+            #new configuration xml document
+            doc = Document()
+
+            #append root element
+            rootElement = doc.createElement('profile')
+            doc.appendChild(rootElement)
+
+            #was home
+            wasHomeElement = doc.createElement('was_home')
+            rootElement.appendChild(wasHomeElement)
+            wasHomeElement.appendChild(doc.createTextNode('was_home'))
+
+            #host element
+            hostElement = doc.createElement('host')
+            rootElement.appendChild(hostElement)
+            hostElement.appendChild(doc.createTextNode('host'))
+
+            #port element
+            portElement = doc.createElement('port')
+            rootElement.appendChild(portElement)
+            portElement.appendChild(doc.createTextNode('port'))
+
+            #port element
+            connTypeElement = doc.createElement('conntype')
+            rootElement.appendChild(connTypeElement)
+            connTypeElement.appendChild(doc.createTextNode('conntype'))
+
+            #username element
+            usernameElement = doc.createElement('username')
+            rootElement.appendChild(usernameElement)
+            usernameElement.appendChild(doc.createTextNode('username'))
+
+            #password element
+            passwordElement = doc.createElement('password')
+            rootElement.appendChild(passwordElement)
+            passwordElement.appendChild(doc.createTextNode('password'))
+
+            #write xml to file
+            file = open(self._profile_dir + '/config/' + '/config.xml', 'wb')
+            file.write(doc.toprettyxml())
+            file.close()
+        except IOError:
+            logging.info("Cant create configuration file to %s profile." % profile_name);
