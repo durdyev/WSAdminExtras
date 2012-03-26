@@ -41,7 +41,7 @@ class RequestEventHandler(RequestHandler):
     _jython_nix = "sh ../scripts/jython.sh"
 
     # path to jython script win
-    _jython_win = "../scripts/jython.bat"
+    _jython_win = "..\scripts\jython.bat"
 
     #trying to upload a file
     def UPLOAD_handler(self):
@@ -92,23 +92,23 @@ class RequestEventHandler(RequestHandler):
 
         # host address
         hostElements = xml_config.getElementsByTagName('was_home')
-        parameters['was_home'] = hostElements[0].firstChild.nodeValue
+        parameters['was_home'] = hostElements[0].firstChild.nodeValue.strip()
 
         # host address
         hostElements = xml_config.getElementsByTagName('host')
-        parameters['host'] = hostElements[0].firstChild.nodeValue
+        parameters['host'] = hostElements[0].firstChild.nodeValue.strip()
 
         # port number
         portElements = xml_config.getElementsByTagName('port')
-        parameters['port'] =  portElements[0].firstChild.nodeValue
+        parameters['port'] =  portElements[0].firstChild.nodeValue.strip()
 
         # username
         userNameElements = xml_config.getElementsByTagName('username')
-        parameters['username'] = userNameElements[0].firstChild.nodeValue
+        parameters['username'] = userNameElements[0].firstChild.nodeValue.strip()
 
         # password element
         passwordElements = xml_config.getElementsByTagName('password')
-        parameters['password'] = passwordElements[0].firstChild.nodeValue
+        parameters['password'] = passwordElements[0].firstChild.nodeValue.strip()
 
         # files
         parameters['files'] = deploy_file_list
@@ -146,7 +146,7 @@ class RequestEventHandler(RequestHandler):
                         command += parameters['mode'] + " "
                         command += abs_file_path + " "
                         command += file_name + " "
-                        command += "' [] '"
+                        command += '"[ [] ]"'
                         print(command)
                         os.system(command)
             except IOError as e:
