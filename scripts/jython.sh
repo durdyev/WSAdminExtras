@@ -10,7 +10,7 @@ APPLICATION_PATH=$7
 APPNAME=$8
 PARAMS=$9
 
-$WAS_HOME$/bin/wsadmin.sh -lang jython -conntype SOAP /
--host $REMOTE_HOST -port $SOAP_PORT /
--username $USERNAME -password $PASSWORD /
--f deploy.py $MODE $APPLICATION_PATH $APPNAME $PARAMS
+$WAS_HOME/bin/wsadmin.sh -lang jython -conntype SOAP \
+-host $REMOTE_HOST -port $SOAP_PORT \
+-username $USERNAME -password $PASSWORD \
+-f ../scripts/deploy.py $MODE $APPLICATION_PATH $APPNAME $PARAMS

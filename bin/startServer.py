@@ -34,7 +34,7 @@ def main():
             baseFunc.configure_logging()
 
     logging.info('Starting a server')
-    HOST, PORT = 'localhost', 1060
+    HOST, PORT = '', 1060
     server = BaseWSAdminExtrasServer((HOST, PORT), RequestEventHandler)
     server.allow_reuse_address = True
 

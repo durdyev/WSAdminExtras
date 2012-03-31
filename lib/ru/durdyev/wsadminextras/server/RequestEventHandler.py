@@ -127,7 +127,6 @@ class RequestEventHandler(RequestHandler):
         # trying to deploy all files
         if len(deploy_file_list) <= 1 and deploy_file_list[0] == 'ALL':
             logging.info("Trying to deploy all files in %s temp directory", self.profile)
-            print('Deploy all files from temp directory to WS')
 
             # getting parameters from profile configuration file.
             try:
@@ -145,8 +144,8 @@ class RequestEventHandler(RequestHandler):
                         command += parameters['username'] + " "
                         command += parameters['password'] + " "
                         command += self._additional_params.mode_uninstall + " "
-                        command += abs_file_path + " "
-                        command += file_name + " "
+                        command += '"%s" ' % abs_file_path.replace('\\','/')
+                        command += '"%s" ' % file_name
                         command += ' "[ ]" '
                         os.system(command)
 
@@ -160,9 +159,9 @@ class RequestEventHandler(RequestHandler):
                         command += parameters['username'] + " "
                         command += parameters['password'] + " "
                         command += self._additional_params.mode_install + " "
-                        command += abs_file_path + " "
-                        command += file_name + " "
-                        command += ' "[-name %s ]" ' % file_name
+                        command += '"%s" ' % abs_file_path.replace('\\','/')
+                        command += '"%s" ' % file_name
+                        command += ' "[-appname %s]" ' % file_name.strip()
                         os.system(command)
             except IOError as e:
                 logging.info(e.strerror)
@@ -180,11 +179,42 @@ class RequestEventHandler(RequestHandler):
         # trying to deploy all files
         if len(deploy_file_list) <= 1 and deploy_file_list[0] == 'ALL':
             logging.info("Trying to deploy all files in %s temp directory", self.profile)
-            print('Deploy all files from temp directory to WS')
 
             # getting parameters from profile configuration file.
             try:
-                pass
+                if parameters['mode'] == self._additional_params.mode_reinstall:
+                    profile_temp_path = '../profiles/' + self.profile + '/tmp/'
+                    files = os.listdir(profile_temp_path)
+                    for file in files:
+                        # uninstall
+                        abs_file_path = os.path.abspath(profile_temp_path + file)
+                        file_name = os.path.splitext(file)[0]
+                        command = self._jython_nix + " "
+                        command += parameters['was_home'] + " "
+                        command += parameters['host'] + " "
+                        command += parameters['port'] + " "
+                        command += parameters['username'] + " "
+                        command += parameters['password'] + " "
+                        command += self._additional_params.mode_uninstall + " "
+                        command += '"%s" ' % abs_file_path
+                        command += '"%s" ' % file_name
+                        command += ' "[ ]" '
+                        os.system(command)
+
+                        # install
+                        abs_file_path = os.path.abspath(profile_temp_path + file)
+                        file_name = os.path.splitext(file)[0]
+                        command = self._jython_nix + " "
+                        command += parameters['was_home'] + " "
+                        command += parameters['host'] + " "
+                        command += parameters['port'] + " "
+                        command += parameters['username'] + " "
+                        command += parameters['password'] + " "
+                        command += self._additional_params.mode_install + " "
+                        command += '"%s" ' % abs_file_path
+                        command += '"%s" ' % file_name
+                        command += ' "[-appname %s]" ' % file_name.strip()
+                        os.system(command)
             except IOError as e:
                 logging.info(e.strerror)
                 print("Cant't configuration file in profile %s " % self.profile)

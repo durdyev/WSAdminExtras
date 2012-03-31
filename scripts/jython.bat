@@ -11,4 +11,4 @@ set PARAMS=%9
 %WAS_HOME%\bin\wsadmin.bat -lang jython -conntype SOAP ^
 -host %REMOTE_HOST% -port %SOAP_PORT% ^
 -username %USERNAME% -password %PASSWORD% ^
--f deploy.py %MODE% %APPLICATION_PATH% %APPNAME% %PARAMS%
+-f ..\scripts\deploy.py %MODE% %APPLICATION_PATH% %APPNAME% %PARAMS%
