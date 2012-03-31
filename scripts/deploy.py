@@ -28,7 +28,7 @@ def main():
             application_name = sys.argv[2]
             parameters = sys.argv[3]
             if sys.argv[4] is not None:
-                parameters += sys.argv[4]
+                parameters += " " + sys.argv[4]
 
         except IndexError:
             print("parameters not set")
