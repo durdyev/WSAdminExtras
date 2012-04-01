@@ -79,6 +79,11 @@ class BaseProfiler(object):
             rootElement.appendChild(passwordElement)
             passwordElement.appendChild(doc.createTextNode('password'))
 
+            #logs folders
+            logsFoldersElement= doc.createElement('logs_folders')
+            rootElement.appendChild(logsFoldersElement)
+            logsFoldersElement.appendChild(doc.createTextNode('logs_folders'))
+
             #write xml to file
             file = open(self._profile_dir + '/config/' + '/config.xml', 'wb')
             file.write(doc.toprettyxml())

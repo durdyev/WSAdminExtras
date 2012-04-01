@@ -69,5 +69,41 @@ def main():
         connection.sendall(request_data)
         connection.sendall(request_content)
 
+    # command get file list from tmp profile
+    if key == '-filelist':
+        profile_name = sys.argv[2]
+
+        connection = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        connection.connect((HOST, PORT))
+
+        request_data = "Command:FILELIST" + delim_n
+        request_data += "Profile:" + profile_name + delim_n
+        request_data += "Content-length:" + str(0)
+        request_data += "Content-type: plain-text"
+        request_data += ' ' * (server_headers.headers_len - len(request_data))
+        connection.sendall(request_data)
+
+        files_str = ''
+        while True:
+            data = connection.recv(1024)
+            if not data: break
+            files_str += data
+
+        files = files_str.split(';')
+
+    #clear logs
+    if key == '-clearlogs':
+        profile_name = sys.argv[2]
+
+        connection = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        connection.connect((HOST, PORT))
+
+        request_data = "Command:CLEARLOGS" + delim_n
+        request_data += "Profile:" + profile_name + delim_n
+        request_data += "Content-length:" + str(0)
+        request_data += "Content-type: plain-text"
+        request_data += ' ' * (server_headers.headers_len - len(request_data))
+        connection.sendall(request_data)
+
 if __name__ == '__main__':
     main()

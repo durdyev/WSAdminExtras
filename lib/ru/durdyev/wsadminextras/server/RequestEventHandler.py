@@ -77,6 +77,7 @@ class RequestEventHandler(RequestHandler):
 
     # deploy uploaded file to server
     def DEPLOY_handler(self):
+        logging.info('trying to upload files from profile %s' % self.profile)
         deploy_files = self.request.recv(self.content_len)
         deploy_file_list = deploy_files.split(',')
         mode_regexp = filename_regexp = re.search(".*Mode:(.*).*", self.headers)
@@ -118,6 +119,41 @@ class RequestEventHandler(RequestHandler):
             self.deploy_win(parameters)
         else:
             self.deploy_nix(parameters)
+
+    def FILELIST_handler(self):
+        logging.info(('Trying to get file list from %s temp directory.' % self.profile))
+        print('Trying to get file list from %s temp directory.' % self.profile)
+
+        profile_tmp_dir = '../profiles/%s/tmp' % self.profile
+        files = os.listdir(profile_tmp_dir)
+        serializable_files = ''
+        if len(files) > 0:
+            for file in files:
+                serializable_files += "%s;" % file
+
+            if len(serializable_files) > 0 :
+                self.request.sendall(serializable_files)
+
+    def CLEARLOGS_handler(self):
+        logging.info('Trying to clear logs in profile %s' % self.profile)
+        print('Trying to clear logs in profile %s' % self.profile)
+
+        # parsing xml config from profile
+        profile_config_file = open('../profiles/' + self.profile + '/config/' + 'config.xml')
+        xml_config = parse(profile_config_file)
+
+        # logs directories
+        logsFoldersElement = xml_config.getElementsByTagName('logs_folders')
+        logsFolders = logsFoldersElement[0].firstChild.nodeValue.strip().split(',')
+        for logFolder in logsFolders:
+            try:
+                if len(logFolder) > 0:
+                    for file in os.listdir(logFolder.strip()):
+                        os.remove(file)
+            except OSError as e:
+                errormessage = 'Cant delete files in %s.' % logFolder.strip()
+                print(errormessage)
+                logging.info(errormessage)
 
 
     # deploy files to windows
