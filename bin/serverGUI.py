@@ -12,9 +12,10 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import sys
+sys.path.append("../lib")
 
 from PyQt4 import QtGui
-from lib.ru.durdyev.wsadminextras.ui.server.ServerApplication import ServerApplication
+from ru.durdyev.wsadminextras.ui.server.ServerApplication import ServerApplication
 
 def main():
     app = QtGui.QApplication(sys.argv)

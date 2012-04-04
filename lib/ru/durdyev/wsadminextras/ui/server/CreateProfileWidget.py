@@ -13,7 +13,7 @@
 
 from PyQt4 import QtGui
 from PyQt4 import QtCore
-from lib.ru.durdyev.wsadminextras.ui.utils.WidgetModes import WidgetModes
+from ru.durdyev.wsadminextras.ui.utils.WidgetModes import WidgetModes
 
 class CreateProfileWidget(QtGui.QWidget):
 

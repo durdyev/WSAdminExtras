@@ -12,9 +12,9 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 from PyQt4 import QtGui
-from lib.ru.durdyev.wsadminextras.ui.server.CreateProfileWidget import CreateProfileWidget
-from lib.ru.durdyev.wsadminextras.utils.ProfileUtils import ProfileUtils
-from lib.ru.durdyev.wsadminextras.ui.utils.WidgetModes import WidgetModes
+from ru.durdyev.wsadminextras.ui.server.CreateProfileWidget import CreateProfileWidget
+from ru.durdyev.wsadminextras.utils.ProfileUtils import ProfileUtils
+from ru.durdyev.wsadminextras.ui.utils.WidgetModes import WidgetModes
 
 ## Server UI
 class ServerApplication(QtGui.QMainWindow):
