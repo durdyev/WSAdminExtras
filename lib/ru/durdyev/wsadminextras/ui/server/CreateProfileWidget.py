@@ -14,6 +14,7 @@
 from PyQt4 import QtGui
 from PyQt4 import QtCore
 from ru.durdyev.wsadminextras.ui.utils.WidgetModes import WidgetModes
+from ru.durdyev.wsadminextras.server.BaseProfiler import BaseProfiler
 
 class CreateProfileWidget(QtGui.QWidget):
 
@@ -64,18 +65,18 @@ class CreateProfileWidget(QtGui.QWidget):
 
         # profile connection type
         self._gridLayout.addWidget(QtGui.QLabel('Connection type:'), 4, 1)
-        self.connectionType = QtGui.QLineEdit()
-        self._gridLayout.addWidget(self.connectionType, 4, 2)
+        self.connectionTypeInput = QtGui.QLineEdit()
+        self._gridLayout.addWidget(self.connectionTypeInput, 4, 2)
 
-        # profile admin user
+        # profile admin users
         self._gridLayout.addWidget(QtGui.QLabel('Admin user:'), 5, 1)
-        self.adminUser = QtGui.QLineEdit()
-        self._gridLayout.addWidget(self.adminUser, 5, 2)
+        self.adminUserInput = QtGui.QLineEdit()
+        self._gridLayout.addWidget(self.adminUserInput, 5, 2)
 
         # profile admin user
         self._gridLayout.addWidget(QtGui.QLabel('Password:'), 6, 1)
-        self.password = QtGui.QLineEdit()
-        self._gridLayout.addWidget(self.password, 6, 2)
+        self.passwordInput = QtGui.QLineEdit()
+        self._gridLayout.addWidget(self.passwordInput, 6, 2)
 
         if (self.mode == WidgetModes.create_mode):
             #create button
@@ -102,7 +103,51 @@ class CreateProfileWidget(QtGui.QWidget):
         self.close()
 
     def createNewProfileAction(self):
-        pass
+        profileParameters = {} # map with parameters
+        profileName = str(self.profileNameInput.text())
+        profileParameters['profile_name'] = profileName
+        profileParameters['was_home'] = str(self.wasHomeInput.text())
+        profileParameters['host'] = str(self.hostInput.text())
+        profileParameters['port'] = str(self.portInput.text())
+        profileParameters['conntype'] = str(self.connectionTypeInput.text())
+        profileParameters['username'] = str(self.adminUserInput.text())
+        profileParameters['password'] = str(self.passwordInput.text())
+
+        ## creating profile
+        if not self.validateParameters(profileParameters):
+            baseProfiler = BaseProfiler()
+            baseProfiler.create_profile(profileName)
+            baseProfiler.create_configuration_file(profileName, profileParameters)
+            self.emit(QtCore.SIGNAL("profileCreated(QString)"), profileName)
+
+    def validateParameters(self, profileParameters):
+        error = False
+        errorMessages = ""
+        if len(profileParameters['profile_name']) <= 0:
+            errorMessages += "<li>Profile name is not set</li>"
+            error = True
+        if len(profileParameters['was_home']) <= 0:
+            errorMessages += "<li>WAS_HOME is not set</li>"
+            error = True
+        if len(profileParameters['host']) <= 0:
+            errorMessages += "<li>Host is not set</li>"
+            error = True
+        if len(profileParameters['port']) <= 0:
+            errorMessages += "<li>Port is not set</li>"
+            error = True
+        if len(profileParameters['conntype']) <= 0:
+            errorMessages += "<li>Connection type is not set</li>"
+            error = True
+        if len(profileParameters['username']) <= 0:
+            errorMessages += "<li>Username type is not set</li>"
+            error = True
+        if len(profileParameters['password']) <= 0:
+            errorMessages += "<li>Password type is not set</li>"
+            error = True
+        if error:
+            QtGui.QMessageBox.warning(self, "Fields not set", errorMessages)
+
+        return error
 
     def updateProfileAction(self):
         pass

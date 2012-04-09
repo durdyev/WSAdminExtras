@@ -46,7 +46,9 @@ def main():
 
 #create new profile	
 def create_new_profile(profileName):
-    BaseProfiler.BaseProfiler(profileName)
+    baseProfiler = BaseProfiler.BaseProfiler()
+    baseProfiler.create_profile(profileName)
+    baseProfiler.create_sample_configuration_files(profileName)
 
 if __name__ == '__main__':
     main()
