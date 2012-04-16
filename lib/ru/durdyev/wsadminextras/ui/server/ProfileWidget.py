@@ -16,7 +16,7 @@ import os, logging
 from PyQt4 import QtGui
 from PyQt4 import QtCore
 
-from lib.ru.durdyev.wsadminextras.server.BaseProfiler import BaseProfiler
+from ru.durdyev.wsadminextras.server.BaseProfiler import BaseProfiler
 
 class ProfileWidget(QtGui.QWidget):
 

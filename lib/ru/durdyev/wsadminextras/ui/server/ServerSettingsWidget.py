@@ -13,7 +13,7 @@
 
 from PyQt4 import QtGui
 from PyQt4 import QtCore
-from lib.ru.durdyev.wsadminextras.utils.ServerSettings import ServerSettings
+from ru.durdyev.wsadminextras.utils.ServerSettings import ServerSettings
 
 class ServerSettingsWidget(QtGui.QWidget):
 
