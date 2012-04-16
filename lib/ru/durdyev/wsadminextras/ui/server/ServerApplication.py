@@ -17,6 +17,8 @@ from ru.durdyev.wsadminextras.ui.server.CreateProfileWidget import CreateProfile
 from ru.durdyev.wsadminextras.utils.ProfileUtils import ProfileUtils
 from ru.durdyev.wsadminextras.ui.utils.WidgetModes import WidgetModes
 from ru.durdyev.wsadminextras.ui.server.ProfileWidget import ProfileWidget
+from ru.durdyev.wsadminextras.ui.server.ServerSettingsWidget import ServerSettingsWidget
+from ru.durdyev.wsadminextras.ui.server.StatusWidget import StatusWidget
 
 ## Server UI
 class ServerApplication(QtGui.QMainWindow):
@@ -42,6 +44,9 @@ class ServerApplication(QtGui.QMainWindow):
     # settings tree item text
     _settingsItemText = "Settings"
 
+    # status tree item text
+    _statusItemText = "Status"
+
     # profile widget
     _profileWidget = None
 
@@ -65,6 +70,11 @@ class ServerApplication(QtGui.QMainWindow):
         fileMenu = menuBar.addMenu('&File')
         # file > create profile
         fileMenu.addAction(self.newProfileAction)
+
+        # view menu
+        viewMenu = menuBar.addMenu('&View')
+        # view > logs
+        viewMenu.addAction(self.viewLogsAction)
 
         # exit action
         menuBar.addAction(self.exitAction)
@@ -104,8 +114,8 @@ class ServerApplication(QtGui.QMainWindow):
         self.qProfilesElement = QtGui.QTreeWidgetItem([self._profilesItemText])
 
         # server elements
-        self.qServerElement.addChild(QtGui.QTreeWidgetItem(['Status']))
-        self.qServerElement.addChild(QtGui.QTreeWidgetItem(['Settings']))
+        self.qServerElement.addChild(QtGui.QTreeWidgetItem([self._statusItemText]))
+        self.qServerElement.addChild(QtGui.QTreeWidgetItem([self._settingsItemText]))
 
         #profiles elements
         profiles = self._base_profiler.get_profile_list()
@@ -131,6 +141,14 @@ class ServerApplication(QtGui.QMainWindow):
 
         return newProfileAction
 
+    # view logs action
+    @property
+    def viewLogsAction(self):
+        viewLogsAction = QtGui.QAction('&Logs', self)
+        viewLogsAction.triggered.connect(self.viewLogsActionSlot)
+
+        return viewLogsAction
+
     def newProfileActionSlot(self):
         message = 'Trying to create new profile'
 
@@ -138,6 +156,9 @@ class ServerApplication(QtGui.QMainWindow):
         createProfileWidget = CreateProfileWidget(self, WidgetModes.create_mode)
         self.connect(createProfileWidget, QtCore.SIGNAL("profileCreated(QString)"),
             self.profileCreatedSlot)
+
+    def viewLogsActionSlot(self):
+        print("View logs")
 
     def profileCreatedSlot(self, profile):
         print("profile created %s" % profile)
@@ -152,11 +173,34 @@ class ServerApplication(QtGui.QMainWindow):
             if parentItem.text(0) == self._profilesItemText:
                 profileNameSelected = currentItem.text(0)
                 self.initProfileSelectedTabBar(profileNameSelected)
+            if parentItem.text(0) == self._settingsItemText:
+                if currentItem.text(0) == self._settingsItemText:
+                    self.initSettings()
+                if currentItem.text(0) == self._statusItemText:
+                    self.initStatus()
+
+    def initStatus(self):
+        self.clearRightGridLayout()
+
+        self.statusWidget = StatusWidget()
+        self.qRightWidgetGrid.addWidget(self.statusWidget, 0, 0)
+
+    def initSettings(self):
+        self.clearRightGridLayout()
+
+        serverSettingsWidget = ServerSettingsWidget()
+        self.qRightWidgetGrid.addWidget(serverSettingsWidget, 0, 0)
 
     def initProfileSelectedTabBar(self, profileName):
+        self.clearRightGridLayout()
+
         if self._profileWidget is not None:
             self._profileWidget.hide()
 
         self._profileWidget = ProfileWidget(self, profileName)
         self._profileWidget.setObjectName(profileName)
         self.qRightWidgetGrid.addWidget(self._profileWidget, 0, 0)
+
+    def clearRightGridLayout(self):
+        for i in range(self.qRightWidgetGrid.count()):
+            self.qRightWidgetGrid.itemAt(i).widget().close()

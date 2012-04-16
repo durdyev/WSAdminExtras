@@ -14,6 +14,7 @@
 import logging
 import os
 
+from xml.dom import minidom
 from xml.dom.minidom import Document
 
 # profile manager class
@@ -150,5 +151,110 @@ class BaseProfiler(object):
         except IOError:
             logging.info("Cant create configuration file to %s profile." % profile_name);
 
+    def update_configuration_file(self, profile_name, params):
+        try:
+            #new configuration xml document
+            doc = Document()
+
+            #append root element
+            rootElement = doc.createElement('profile')
+            doc.appendChild(rootElement)
+
+            #was home
+            wasHomeElement = doc.createElement('was_home')
+            rootElement.appendChild(wasHomeElement)
+            wasHomeElement.appendChild(doc.createTextNode(params['was_home']))
+
+            #host element
+            hostElement = doc.createElement('host')
+            rootElement.appendChild(hostElement)
+            hostElement.appendChild(doc.createTextNode(params['host']))
+
+            #port element
+            portElement = doc.createElement('port')
+            rootElement.appendChild(portElement)
+            portElement.appendChild(doc.createTextNode(params['port']))
+
+            #port element
+            connTypeElement = doc.createElement('conntype')
+            rootElement.appendChild(connTypeElement)
+            connTypeElement.appendChild(doc.createTextNode(params['conntype']))
+
+            #username element
+            usernameElement = doc.createElement('username')
+            rootElement.appendChild(usernameElement)
+            usernameElement.appendChild(doc.createTextNode(params['username']))
+
+            #password element
+            passwordElement = doc.createElement('password')
+            rootElement.appendChild(passwordElement)
+            passwordElement.appendChild(doc.createTextNode(params['password']))
+
+            #write xml to file
+            file = open(self._profile_dir + profile_name + '/config/' + '/config.xml', 'wb')
+            file.write(doc.toprettyxml())
+            file.close()
+
+            return 0
+        except IOError:
+            logging.info("Cant create configuration file to %s profile." % profile_name);
+
+            return -1
+
     def get_was_home(self, profileName):
-        self._profile_dir
+        profile_xml = minidom.parse(str(self.get_config_xml(profileName)))
+        value = profile_xml.getElementsByTagName("was_home")[0].firstChild.data.strip()
+
+        return value
+
+    def get_host(self, profileName):
+        profile_xml = minidom.parse(str(self.get_config_xml(profileName)))
+        value = profile_xml.getElementsByTagName("host")[0].firstChild.data.strip()
+
+        return value
+
+    def get_port(self, profileName):
+        profile_xml = minidom.parse(str(self.get_config_xml(profileName)))
+        value = profile_xml.getElementsByTagName("port")[0].firstChild.data.strip()
+
+        return value
+
+    def get_conntype(self, profileName):
+        profile_xml = minidom.parse(str(self.get_config_xml(profileName)))
+        value = profile_xml.getElementsByTagName("conntype")[0].firstChild.data.strip()
+
+        return value
+
+    def get_username(self, profileName):
+        profile_xml = minidom.parse(str(self.get_config_xml(profileName)))
+        value = profile_xml.getElementsByTagName("username")[0].firstChild.data.strip()
+
+        return value
+
+    def get_password(self, profileName):
+        profile_xml = minidom.parse(str(self.get_config_xml(profileName)))
+        value = profile_xml.getElementsByTagName("password")[0].firstChild.data.strip()
+
+        return value
+
+    def get_config_xml(self, profileName):
+        profile_settings_xml = self._profile_dir + profileName + "/config/config.xml"
+
+        return profile_settings_xml
+
+    def get_tmp_dir(self, profileName):
+        return self._profile_dir + profileName + "/tmp"
+
+    def get_file_list(self, profileName):
+        tmp_dir = self.get_tmp_dir(profileName)
+
+        files = []
+        for file in os.listdir(tmp_dir):
+            size = os.path.getsize(self.get_tmp_dir(profileName) + "/" + file)
+            files.append({
+                "name" : file,
+                "type" : file.split(".")[-1],
+                "size" : size
+            })
+
+        return files
