@@ -25,9 +25,10 @@ class ProfileUtils(object):
     def get_profile_list(self):
         profiles = []
         try:
-            for profile in os.listdir(self._profiles_path):
-                if os.path.isdir(self._profiles_path + profile):
-                    profiles.append(profile)
+            if os.path.exists(self._profiles_path):
+                for profile in os.listdir(self._profiles_path):
+                    if os.path.isdir(self._profiles_path + profile):
+                        profiles.append(profile)
         except IOError as e:
             print("Can't list in %s" % self._profiles_path)
 
