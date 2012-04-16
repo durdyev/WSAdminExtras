@@ -112,7 +112,7 @@ class ProfileWidget(QtGui.QWidget):
 
         # buttons
         self.deleteFileButton = QtGui.QPushButton("Delete file")
-        self.deleteFileButton.clicked.connect(self.confirmFileDelete)
+        self.deleteFileButton.clicked.connect(self.deleteSelectedFile)
         self.qFilesGridLayout.addWidget(self.deleteFileButton)
 
     def clearProfileFilesTab(self):
