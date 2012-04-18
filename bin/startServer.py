@@ -16,7 +16,6 @@ import sys
 sys.path.append("../lib")
 import  logging, threading
 import baseFunc
-import SocketServer
 
 from ru.durdyev.wsadminextras.server.BaseWSAdminExtrasServer import BaseWSAdminExtrasServer
 from ru.durdyev.wsadminextras.server.RequestEventHandler import RequestEventHandler
@@ -27,21 +26,24 @@ from ru.durdyev.wsadminextras.utils.ServerCodes import ServerCodes
 def main():
     try:
         baseFunc.configure_logging()
+
+        logging.info('Starting a server')
+        HOST, PORT = '', 1060
+        server = BaseWSAdminExtrasServer((HOST, PORT), RequestEventHandler)
+        server.allow_reuse_address = True
+
+        print('Server now running at ' + str(server.server_address))
+        logging.info(('Server now running at ' + str(server.server_address)))
+
+        server.serve_forever()
+
     except IOError as e:
         print('logging folder doesn\'t exist')
         print('trying to create logging folder...')
         if baseFunc.create_log_folder():
             baseFunc.configure_logging()
-
-    logging.info('Starting a server')
-    HOST, PORT = '', 1060
-    server = BaseWSAdminExtrasServer((HOST, PORT), RequestEventHandler)
-    server.allow_reuse_address = True
-
-    server_thread = threading.Thread(target=server.serve_forever)
-    server_thread.start()
-
-    logging.info(('Server now running at ' + str(server.server_address)))
+    except KeyboardInterrupt as e:
+        print("Server stoped.")
 
 if __name__ == '__main__':
     main()
