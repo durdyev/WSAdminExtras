@@ -19,6 +19,10 @@ from ru.durdyev.wsadminextras.ui.utils.WidgetModes import WidgetModes
 from ru.durdyev.wsadminextras.ui.server.ProfileWidget import ProfileWidget
 from ru.durdyev.wsadminextras.ui.server.ServerSettingsWidget import ServerSettingsWidget
 from ru.durdyev.wsadminextras.ui.server.StatusWidget import StatusWidget
+from ru.durdyev.wsadminextras.server.BaseWSAdminExtrasServer import BaseWSAdminExtrasServer
+from ru.durdyev.wsadminextras.server.RequestEventHandler import RequestEventHandler
+from ru.durdyev.wsadminextras.utils.ServerSettings import ServerSettings
+from ru.durdyev.wsadminextras.utils.ServerCodes import ServerCodes
 
 ## Server UI
 class ServerApplication(QtGui.QMainWindow):
@@ -61,6 +65,15 @@ class ServerApplication(QtGui.QMainWindow):
         self.initMenuBar()
         self.initBaseUI()
         self.show()
+
+    def initServer(self):
+        self._serverSettings = ServerSettings()
+
+        HOST = str(self._serverSettings.get_server_address())
+        PORT = int(self._serverSettings.get_server_port())
+
+        self.server = BaseWSAdminExtrasServer((HOST, PORT), RequestEventHandler)
+        self.server.allow_reuse_address = True
 
     def initMenuBar(self):
         # initialize menubar
@@ -186,8 +199,6 @@ class ServerApplication(QtGui.QMainWindow):
         self.qRightWidgetGrid.addWidget(self.statusWidget, 0, 0)
 
     def initSettings(self):
-        self.clearRightGridLayout()
-
         serverSettingsWidget = ServerSettingsWidget()
         self.qRightWidgetGrid.addWidget(serverSettingsWidget, 0, 0)
 

@@ -11,14 +11,16 @@
 #    You should have received a copy of the GNU General Public License
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+import threading
+from multiprocessing import Process
 from PyQt4 import QtGui
-from PyQt4 import QtCore
 
 class StatusWidget(QtGui.QWidget):
 
-    def __init__(self, parent = None):
+    def __init__(self, parent = None, server=None):
         super(StatusWidget, self).__init__(parent)
         self.initUI()
+        self.server = server
 
     def initUI(self):
         self.statusWidgetGridLayout = QtGui.QGridLayout()
@@ -43,7 +45,16 @@ class StatusWidget(QtGui.QWidget):
         self.topGridLayout.addWidget(statusLabel, 0, 0)
 
         self.startButton = QtGui.QPushButton("Start server")
+        self.startButton.clicked.connect(self.startServer)
         self.bottomGridLayout.addWidget(self.startButton, 1, 0)
 
         self.stopButton = QtGui.QPushButton("Stop server")
+        self.stopButton.clicked.connect(self.stopServer)
         self.bottomGridLayout.addWidget(self.stopButton, 1, 1)
+
+    def startServer(self):
+        self.statusThread = threading.Thread(target=self.server.serve_forever)
+        self.statusThread.start()
+
+    def stopServer(self):
+        self.statusThread.join()

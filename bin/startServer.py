@@ -19,6 +19,7 @@ import baseFunc
 
 from ru.durdyev.wsadminextras.server.BaseWSAdminExtrasServer import BaseWSAdminExtrasServer
 from ru.durdyev.wsadminextras.server.RequestEventHandler import RequestEventHandler
+from ru.durdyev.wsadminextras.utils.ServerSettings import ServerSettings
 from ru.durdyev.wsadminextras.utils.ServerCodes import ServerCodes
 
 #starting the server
@@ -26,9 +27,12 @@ from ru.durdyev.wsadminextras.utils.ServerCodes import ServerCodes
 def main():
     try:
         baseFunc.configure_logging()
+        serverSettings = ServerSettings()
 
         logging.info('Starting a server')
-        HOST, PORT = '', 1060
+        HOST = str(serverSettings.get_server_address())
+        PORT = int(serverSettings.get_server_port())
+
         server = BaseWSAdminExtrasServer((HOST, PORT), RequestEventHandler)
         server.allow_reuse_address = True
 
