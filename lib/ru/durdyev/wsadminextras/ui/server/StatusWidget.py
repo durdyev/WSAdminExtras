@@ -11,16 +11,20 @@
 #    You should have received a copy of the GNU General Public License
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import threading
+import threading, os
+
 from multiprocessing import Process
 from PyQt4 import QtGui
+from ru.durdyev.wsadminextras.server.ServerManager import ServerManager
 
 class StatusWidget(QtGui.QWidget):
 
-    def __init__(self, parent = None, server=None):
+    _serverManager = None
+
+    def __init__(self, parent = None):
         super(StatusWidget, self).__init__(parent)
         self.initUI()
-        self.server = server
+        self.initServer()
 
     def initUI(self):
         self.statusWidgetGridLayout = QtGui.QGridLayout()
@@ -51,6 +55,9 @@ class StatusWidget(QtGui.QWidget):
         self.stopButton = QtGui.QPushButton("Stop server")
         self.stopButton.clicked.connect(self.stopServer)
         self.bottomGridLayout.addWidget(self.stopButton, 1, 1)
+
+    def initServer(self):
+        self._serverManager = ServerManager()
 
     def startServer(self):
         self.statusThread = threading.Thread(target=self.server.serve_forever)
