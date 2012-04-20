@@ -78,47 +78,19 @@ class RequestEventHandler(RequestHandler):
     # deploy uploaded file to server
     def DEPLOY_handler(self):
         logging.info('trying to upload files from profile %s' % self.profile)
-        deploy_files = self.request.recv(self.content_len)
-        deploy_file_list = deploy_files.split(',')
-        mode_regexp = filename_regexp = re.search(".*Mode:(.*).*", self.headers)
-
-        # parsing xml config from profile
-        profile_config_file = open('../profiles/' + self.profile + '/config/' + 'config.xml')
-        xml_config = parse(profile_config_file)
+        self.wsadminQueue.appendleft('execfile(\'c:\\work\\command.jy\')\n')
+        #deploy_files = self.request.recv(self.content_len)
+        #deploy_file_list = deploy_files.split(',')
         parameters = {}
 
-        # mode
-        if mode_regexp is not None:
-            parameters['mode'] = mode_regexp.group(1).strip()
-
-        # host address
-        hostElements = xml_config.getElementsByTagName('was_home')
-        parameters['was_home'] = hostElements[0].firstChild.nodeValue.strip()
-
-        # host address
-        hostElements = xml_config.getElementsByTagName('host')
-        parameters['host'] = hostElements[0].firstChild.nodeValue.strip()
-
-        # port number
-        portElements = xml_config.getElementsByTagName('port')
-        parameters['port'] =  portElements[0].firstChild.nodeValue.strip()
-
-        # username
-        userNameElements = xml_config.getElementsByTagName('username')
-        parameters['username'] = userNameElements[0].firstChild.nodeValue.strip()
-
-        # password element
-        passwordElements = xml_config.getElementsByTagName('password')
-        parameters['password'] = passwordElements[0].firstChild.nodeValue.strip()
-
         # files
-        parameters['files'] = deploy_file_list
+        #parameters['files'] = deploy_file_list
 
         # call deploy script to specific OS
-        if (sys.platform == 'win32'):
-            self.deploy_win(parameters)
-        else:
-            self.deploy_nix(parameters)
+        #if (sys.platform == 'win32'):
+        #self.deploy_win(parameters)
+        #else:
+        #self.deploy_nix(parameters)
 
     def FILELIST_handler(self):
         logging.info(('Trying to get file list from %s temp directory.' % self.profile))

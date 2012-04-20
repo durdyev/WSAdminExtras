@@ -171,3 +171,7 @@ class RequestHandler(SocketServer.StreamRequestHandler):
     @property
     def server_commands(self):
         return self._server_commands
+
+    @property
+    def wsadminQueue(self):
+        return self._wsadminQueue

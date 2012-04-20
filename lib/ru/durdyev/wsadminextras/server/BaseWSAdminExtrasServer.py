@@ -36,7 +36,7 @@ class BaseWSAdminExtrasServer(SocketServer.ThreadingMixIn, SocketServer.TCPServe
     commandQueue = collections.deque()
 
     def server_activate(self):
-        self.server_activate()
+        SocketServer.TCPServer.server_activate(self)
         self.startWsAdminProcess()
 
     def finish_request(self, request, client_address):
@@ -79,7 +79,7 @@ class BaseWSAdminExtrasServer(SocketServer.ThreadingMixIn, SocketServer.TCPServe
 
         thread.start_new_thread(self.waitForCommand, ())
 
-        thread.start_new_thread(self.commandGenerator, ())
+        #thread.start_new_thread(self.commandGenerator, ())
 
     def waitForCommand(self):
         while True:
