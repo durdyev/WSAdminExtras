@@ -45,6 +45,12 @@ class RequestHandler(SocketServer.StreamRequestHandler):
     _server_codes = ServerCodes()
     _server_headers = ServerHeaders()
 
+    _wsadminQueue = None
+
+    def __init__(self, request, client_address, server, queue):
+        super(request, client_address, server)
+        self._wsadminQueue = queue
+
     #override method to catch a packets.
     def handle(self):
         self._request_id = NetUtils.generate_request_id()

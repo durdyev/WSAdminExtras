@@ -22,6 +22,7 @@ import thread
 
 from xml.dom.minidom import parse
 from ru.durdyev.wsadminextras.utils.XMLUtils import XMLUtils
+from ru.durdyev.wsadminextras.server.RequestHandler import RequestHandler
 
 class BaseWSAdminExtrasServer(SocketServer.ThreadingMixIn, SocketServer.TCPServer):
 
@@ -35,17 +36,13 @@ class BaseWSAdminExtrasServer(SocketServer.ThreadingMixIn, SocketServer.TCPServe
     commandQueue = collections.deque()
 
     def server_activate(self):
-        """Called by constructor to activate the server.
-
-        May be overridden.
-
-        """
         self.server_activate()
         self.startWsAdminProcess()
 
     def finish_request(self, request, client_address):
-        """Finish one request by instantiating RequestHandlerClass."""
-        self.RequestHandlerClass(request, client_address, self)
+        if self.RequestHandlerClass is RequestHandler:
+            requestHandler = RequestHandler(self.RequestHandlerClass)
+            requestHandler(request, client_address, self, self.commandQueue)
 
     def startWsAdminProcess(self):
 
