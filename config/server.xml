@@ -6,4 +6,7 @@
 	<port>
 		1061
 	</port>
+	<default_profile>
+		SimpleProfile
+	</default_profile>
 </server>

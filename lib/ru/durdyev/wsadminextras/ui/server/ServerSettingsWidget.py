@@ -27,7 +27,7 @@ class ServerSettingsWidget(QtGui.QWidget):
     def initUI(self):
         self.serverSettingsGridLayout = QtGui.QGridLayout()
         serverSettingsWidget = QtGui.QWidget(self)
-        serverSettingsWidget.setGeometry(0, 0, 340, 90)
+        serverSettingsWidget.setGeometry(0, 0, 400, 150)
         serverSettingsWidget.setLayout(self.serverSettingsGridLayout)
 
         # server address
@@ -42,15 +42,22 @@ class ServerSettingsWidget(QtGui.QWidget):
         self.serverPortInput = QtGui.QLineEdit(serverPort)
         self.serverSettingsGridLayout.addWidget(self.serverPortInput, 1, 1)
 
+        # server port
+        self.serverSettingsGridLayout.addWidget(QtGui.QLabel("Default profile"), 2, 0)
+        defaultProfile = QtCore.QString(self._server_settings.get_default_profile())
+        self.defaultProfileInput = QtGui.QLineEdit(defaultProfile)
+        self.serverSettingsGridLayout.addWidget(self.defaultProfileInput, 2, 1)
+
         # buttons
         updateButton = QtGui.QPushButton("Update server settings")
         updateButton.clicked.connect(self.updateServerSettings)
-        self.serverSettingsGridLayout.addWidget(updateButton, 2 , 0)
+        self.serverSettingsGridLayout.addWidget(updateButton, 3 , 0)
 
     def updateServerSettings(self):
         params = {
             "address" : str(self.serverAddressInput.text()),
-            "port" : str(self.serverPortInput.text())
+            "port" : str(self.serverPortInput.text()),
+            "default_profile" : str(self.defaultProfileInput.text())
         }
 
         if self._server_settings.update_server_settings(params) == 0:

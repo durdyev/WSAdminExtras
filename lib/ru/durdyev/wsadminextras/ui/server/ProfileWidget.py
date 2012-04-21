@@ -34,7 +34,7 @@ class ProfileWidget(QtGui.QWidget):
     def initUI(self):
         self.qTabWidget = QtGui.QTabWidget(self)
         self.qTabBar = QtGui.QTabBar(self.qTabWidget)
-        self.qTabWidget.setGeometry(0, 0, 343, 220)
+        self.qTabWidget.setGeometry(0, 0, 390, 261)
 
         self.qSettingsTab = QtGui.QWidget(self.qTabWidget)
         self.qSettingsGridLayout = QtGui.QGridLayout()
@@ -98,7 +98,7 @@ class ProfileWidget(QtGui.QWidget):
     def initProfileFilesTab(self):
         self.qFilesTreeView = QtGui.QTreeView()
         self.qFileTreeList = QtGui.QTreeWidget(self.qFilesTreeView)
-        self.qFileTreeList.setGeometry(0, 0, 326, 155)
+        self.qFileTreeList.setGeometry(0, 0, 369, 177)
         self.qFileTreeList.setHeaderLabels(['Name', 'Type', 'Size'])
 
         self.qFilesGridLayout.addWidget(self.qFilesTreeView, 0, 0)
