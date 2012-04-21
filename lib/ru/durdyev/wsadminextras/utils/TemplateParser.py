@@ -22,14 +22,23 @@ class TemplateParser(object):
     # template files extension
     _template_ext = ".template"
 
-    def generateScriptFromTemplate(self, scriptName, params):
+    _replace_parameters = {
+        'application_path' : '%application_path%'
+    }
+
+    def generateScriptFromTemplate(self, scriptName, params, profile):
         try:
             fileContent = None
             if  os.path.exists(self.template_dir):
                 fileContent = self.getFileContent(scriptName + self.template_ext)
                 for parameter in params:
-                    replace_param = params[parameter]
-                    fileContent = fileContent.replace("%" + parameter + "%", replace_param)
+                    if parameter in self.replace_parameters:
+                        if parameter == 'application_path':
+                            replace_param = "../profiles/" + profile + "/tmp/" + params[parameter]
+                            fileContent = fileContent.replace(self.replace_parameters[parameter], replace_param)
+                    else:
+                        replace_param = params[parameter]
+                        fileContent = fileContent.replace("%" + parameter + "%", replace_param)
                 return fileContent
         except IOError as e:
             print("Cant't read template file from scripts. See logs.")
