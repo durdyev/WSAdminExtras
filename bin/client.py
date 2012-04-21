@@ -20,7 +20,7 @@ import baseFunc
 from ru.durdyev.wsadminextras.utils.NetUtils import NetUtils
 from ru.durdyev.wsadminextras.utils.ServerHeaders import ServerHeaders
 
-HOST, PORT = '', 1060
+HOST, PORT = 'localhost', 1061
 RESPONSE_LEN = 2
 delim_n = '\n'
 server_headers = ServerHeaders()

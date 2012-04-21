@@ -32,10 +32,10 @@ class ServerApplication(QtGui.QMainWindow):
     _server_application_title = 'WSAdminExtras Server'
 
     # application width
-    _app_width = 500
+    _app_width = 600
 
     # application height
-    _app_height = 250
+    _app_height = 300
 
     #base profiler
     _base_profiler = ProfileUtils()
@@ -93,21 +93,21 @@ class ServerApplication(QtGui.QMainWindow):
         self.qLeftWidgetGrid = QtGui.QGridLayout()
         self.qLeftWidgetLayout = QtGui.QWidget(self.qBaseWidget)
         self.qLeftWidgetLayout.setLayout(self.qLeftWidgetGrid)
-        self.qLeftWidgetLayout.setGeometry(0,0,150,230)
+        self.qLeftWidgetLayout.setGeometry(0,0,190,280)
 
         # right widget layout
         self.qRightWidgetGrid = QtGui.QGridLayout()
         self.qRightWidgetLayout = QtGui.QWidget(self.qBaseWidget)
         self.qRightWidgetLayout.setLayout(self.qRightWidgetGrid)
-        self.qRightWidgetLayout.setGeometry(140, 0, 350, 230)
+        self.qRightWidgetLayout.setGeometry(175, 0, 410, 290)
         # tree view
         self.qTreeView = QtGui.QTreeView()
-        self.qTreeView.setGeometry(0,0,150,230)
+        self.qTreeView.setGeometry(0,0,190,280)
         self.qLeftWidgetGrid.addWidget(self.qTreeView, 0, 0)
 
         # main tree
         self.qTree = QtGui.QTreeWidget(self.qTreeView)
-        self.qTree.setGeometry(0,0,141,220)
+        self.qTree.setGeometry(0,0,172,262)
         self.qTree.setStyleSheet("padding-left:2px")
         self.qTree.clicked.connect(self.clickToTree)
 

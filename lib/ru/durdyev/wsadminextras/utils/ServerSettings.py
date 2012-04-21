@@ -31,6 +31,10 @@ class ServerSettings(object):
         serverSettings = minidom.parse(self._server_config_file)
         return serverSettings.getElementsByTagName("port")[0].firstChild.data.strip()
 
+    def get_default_profile(self):
+        serverSettings = minidom.parse(self._server_config_file)
+        return serverSettings.getElementsByTagName("default_profile")[0].firstChild.data.strip()
+
     def update_server_settings(self, params):
         if params is not None:
             try:
@@ -47,6 +51,11 @@ class ServerSettings(object):
                 portElement = doc.createElement("port")
                 portElement.appendChild(doc.createTextNode(params['port']))
                 rootElement.appendChild(portElement)
+
+                #port
+                defaultProfileElement = doc.createElement("default_profile")
+                defaultProfileElement.appendChild(doc.createTextNode(params['default_profile']))
+                rootElement.appendChild(defaultProfileElement)
 
                 doc.appendChild(rootElement)
 
