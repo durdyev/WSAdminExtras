@@ -87,7 +87,8 @@ class BaseWSAdminExtrasServer(SocketServer.ThreadingMixIn, SocketServer.TCPServe
             print(out)
             if(out[:9] == 'WASX7031I'):
                 print('end of loading')
-            if(out[:16] == 'wait for command' or out[:9] == 'WASX7031I'):
+
+            if(out[:16] == 'wait for command' or out[:9] == 'WASX7031I' or out[:3] == 'OK:'):
                 while True:
                     if(len(self.commandQueue) > 0):
                         command = self.commandQueue.pop()
