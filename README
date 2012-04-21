@@ -11,13 +11,41 @@ or if you use some of linux distributions you can simply run commands like this:
 - yum install PyQt4
 
 Usage:
-cd bin
-python createProfile.py -profileName SimpleProfile
+- cd bin
+- python createProfile.py -profileName SimpleProfile
+Or you can create new profile with GUI. To start GUI for server run in bin directory:
+- python serverGUI.py
 
-Then you should configure simple profile. Open profiles/<profile_name>/config/config.xml.
+Then you should configure profile. Open profiles/<profile_name>/config/config.xml.
+Or you can configure profile with GUI. To start GUI for server run in bin directory:
+- python serverGUI.py
+
+You need to fill default profile field in serverGUI. This field is required.
+Or in profile config.xml <default_profile>.
 
 When configuration finished run in bin directory
 - python startServer.py
+
+COMMUNICATE WITH SERVER
+
+To upload file on server run in bin directory:
+- python client.py -upload <file_path> <profile_name>
+
+To deploy uploaded file on Websphere Application Server run:
+- python client.py -custom <profile_name> <template_file_name> "{ [parameter1:value], [parameter2:value], ... }"
+
+where <file_path> is path to ear file, <profile_name> is profile that you want to use, <template_file_name> 
+is template of jython script, parameters is %parameters% in your template file in scripts directory.
+
+for example, to uninstall application, you need to run
+- python client.py -custom SimpleProfile uninstall "{ [app_name:ru.durdyev.simpleweb.ear] }"
+
+where SimpleProfiel = profile, uninstall = uninstall.template in scripts directory, parameter app_name 
+is %app_name% in uninstall.template file.
+
+When you installing application you don't need to fill full path to the application file, just write 
+name of uploaded file and profile name.
+
 
 At goal:
 -stop/start server
