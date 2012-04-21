@@ -45,7 +45,7 @@ class RequestEventHandler(RequestHandler):
 
     #trying to upload a file
     def UPLOAD_handler(self):
-        logging.info("uploading a file. request_id=")
+        logging.info("uploading a file. request_id=%s" % self.request_id)
         self._request_id = NetUtils.generate_request_id()
         code = self.server_codes.code_ok
         filename = ''
@@ -77,7 +77,7 @@ class RequestEventHandler(RequestHandler):
 
     # deploy uploaded file to server
     def DEPLOY_handler(self):
-        logging.info('trying to upload files from profile %s' % self.profile)
+        logging.info('trying to deploy files from profile %s' % self.profile)
         self.wsadminQueue.appendleft('execfile(\'c:\\work\\command.jy\')\n')
         #deploy_files = self.request.recv(self.content_len)
         #deploy_file_list = deploy_files.split(',')

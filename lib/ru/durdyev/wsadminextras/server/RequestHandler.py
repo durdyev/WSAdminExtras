@@ -52,54 +52,54 @@ class RequestHandler(SocketServer.StreamRequestHandler):
 
     #override method to catch a packets.
     def handle(self):
-        self._request_id = NetUtils.generate_request_id()
-        self._headers = self.request.recv(self._server_headers.headers_len)
+        while True:
+            self._request_id = NetUtils.generate_request_id()
+            self._headers = self.request.recv(self._server_headers.headers_len)
 
-        regexp_headers = re.search('.*Command:(.*).*', self.headers)
-        regexp_content_len = re.search(".*Content-length:(.*).*", self.headers)
-        regexp_content_type = re.search(".*Content-type:(.*).*", self.headers)
-        regexp_profile = re.search(".*Profile:(.*).*", self.headers)
-        try:
-            if regexp_content_len is not None:
-                self._content_len = regexp_content_len.group(1).strip()
-            else:
-                raise HeadersNotSetException(self.server_codes.code_headers_not_recived,
-                                             'Content-len not is not recived.')
-
-            if regexp_content_type is not None:
-                self._content_type = regexp_content_type.group(1).strip()
-            else:
-                raise HeadersNotSetException(self.server_codes.code_headers_not_recived,
-                                             'Content-type is not recived')
-
-            if regexp_profile is not None:
-                self._profile = regexp_profile.group(1).strip()
-            else:
-                raise HeadersNotSetException(self.server_codes.code_headers_not_recived,
-                                             'Profile not recived.')
-
-            if regexp_headers is not None:
-                comand_code = regexp_headers.group(1).strip()
-                if len(comand_code) > 0:
-                    self._command = comand_code + '_handler'
+            regexp_headers = re.search('.*Command:(.*).*', self.headers)
+            regexp_content_len = re.search(".*Content-length:(.*).*", self.headers)
+            regexp_content_type = re.search(".*Content-type:(.*).*", self.headers)
+            regexp_profile = re.search(".*Profile:(.*).*", self.headers)
+            try:
+                if regexp_content_len is not None:
+                    self._content_len = regexp_content_len.group(1).strip()
                 else:
-                    logging.info('command doesn\'t set. ')
-                    raise HeadersNotSetException(server_codes.code_headers_not_recived,
-                                                 'command is not set.')
+                    raise HeadersNotSetException(self.server_codes.code_headers_not_recived,
+                                                 'Content-len not is not recived.')
 
-                commandHandler = getattr(self, self.command)
-                if commandHandler is not None:
-                    commandHandler()
+                if regexp_content_type is not None:
+                    self._content_type = regexp_content_type.group(1).strip()
                 else:
-                    self.send_error(server_codes.code_headers_not_recived)
+                    raise HeadersNotSetException(self.server_codes.code_headers_not_recived,
+                                                 'Content-type is not recived')
 
-            return
-        except BaseException as e:
-            #headers not recived
-            logging.info('Headers not set error.' + e.msg)
-            self.send_error(self.server_codes.code_headers_not_recived)
-            return
+                if regexp_profile is not None:
+                    self._profile = regexp_profile.group(1).strip()
+                else:
+                    raise HeadersNotSetException(self.server_codes.code_headers_not_recived,
+                                                 'Profile not recived.')
 
+                if regexp_headers is not None:
+                    comand_code = regexp_headers.group(1).strip()
+                    if len(comand_code) > 0:
+                        self._command = comand_code + '_handler'
+                    else:
+                        logging.info('command doesn\'t set. ')
+                        raise HeadersNotSetException(server_codes.code_headers_not_recived,
+                                                     'command is not set.')
+
+                    commandHandler = getattr(self, self.command)
+                    if commandHandler is not None:
+                        commandHandler()
+                    else:
+                        self.send_error(server_codes.code_headers_not_recived)
+
+                return
+            except BaseException as e:
+                #headers not recived
+                logging.info('Headers not set error.' + e.msg)
+                self.send_error(self.server_codes.code_headers_not_recived)
+                return
 
     #recv bytes
     @classmethod
