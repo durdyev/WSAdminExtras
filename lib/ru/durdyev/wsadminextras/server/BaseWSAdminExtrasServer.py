@@ -24,6 +24,7 @@ import re
 from xml.dom.minidom import parse
 from ru.durdyev.wsadminextras.utils.XMLUtils import XMLUtils
 from ru.durdyev.wsadminextras.server.RequestHandler import RequestHandler
+from ru.durdyev.wsadminextras.utils.ServerSettings import ServerSettings
 
 class BaseWSAdminExtrasServer(SocketServer.ThreadingMixIn, SocketServer.TCPServer):
 
@@ -36,6 +37,8 @@ class BaseWSAdminExtrasServer(SocketServer.ThreadingMixIn, SocketServer.TCPServe
     #List of commands
     commandQueue = collections.deque()
 
+    _server_settings = ServerSettings()
+
     def __init__(self, server_address, RequestHandler):
         RequestHandler.__class__ = RequestHandler
         SocketServer.TCPServer.__init__(self, server_address, RequestHandler, bind_and_activate=True)
@@ -46,9 +49,10 @@ class BaseWSAdminExtrasServer(SocketServer.ThreadingMixIn, SocketServer.TCPServe
         self.startWsAdminProcess()
 
     def startWsAdminProcess(self):
+        default_profile = self.server_settings.get_default_profile()
 
         # parsing xml config from profile
-        profile_config_file = open('../profiles/' + 'SimpleProfile' + '/config/' + 'config.xml')
+        profile_config_file = open('../profiles/' + default_profile + '/config/' + 'config.xml')
         xml_config = parse(profile_config_file)
         parameters = {}
 
@@ -107,11 +111,6 @@ class BaseWSAdminExtrasServer(SocketServer.ThreadingMixIn, SocketServer.TCPServe
                     else:
                         time.sleep(1)
 
-    def commandGenerator(self):
-        while True:
-            self.commandQueue.appendleft('execfile(\'c:\\work\\command.jy\')\n')
-            time.sleep(5)
-
     # deploy files to windows
     def start_win(self, parameters):
         # trying to deploy all files
@@ -145,3 +144,7 @@ class BaseWSAdminExtrasServer(SocketServer.ThreadingMixIn, SocketServer.TCPServe
     @property
     def profile(self):
         return self._profile
+
+    @property
+    def server_settings(self):
+        return self._server_settings
