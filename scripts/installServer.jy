@@ -1,0 +1,3 @@
+#example AdminApplication.installAppWithNodeAndServerOptions('neoflex.hmb.loanApplicationApp-3.2.2.3-SNAPSHOT', 'C:\\work\\neoflex.hmb.loanApplicationApp-3.2.2.3-SNAPSHOT-aspect.ear', 'WPSServer', 'server1')
+AdminApplication.installAppWithNodeAndServerOptions('%app_name%', '%ear_path%', '%node_name%', '%server_name%')
+print('wait for command')
