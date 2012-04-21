@@ -35,13 +35,15 @@ class BaseWSAdminExtrasServer(SocketServer.ThreadingMixIn, SocketServer.TCPServe
     #List of commands
     commandQueue = collections.deque()
 
+
+    def __init__(self, server_address, RequestEventHandler):
+        RequestEventHandler.__class__ = RequestEventHandler
+        SocketServer.TCPServer.__init__(self, server_address, RequestEventHandler, bind_and_activate=True)
+        self.RequestHandlerClass.setQueue(RequestEventHandler, self.commandQueue)
+
     def server_activate(self):
         self.socket.listen(self.request_queue_size)
         self.startWsAdminProcess()
-
-    def finish_request(self, request, client_address):
-        self.RequestHandlerClass.__class__ = RequestHandler
-        self.RequestHandlerClass(request, client_address, self, self.commandQueue)
 
     def startWsAdminProcess(self):
 

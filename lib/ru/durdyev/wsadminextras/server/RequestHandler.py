@@ -47,9 +47,8 @@ class RequestHandler(SocketServer.StreamRequestHandler):
 
     _wsadminQueue = None
 
-    def __init__(self, request, client_address, server, queue):
+    def setQueue(self, queue):
         self._wsadminQueue = queue
-        SocketServer.StreamRequestHandler.__init__(self, request, client_address, server)
 
     #override method to catch a packets.
     def handle(self):
