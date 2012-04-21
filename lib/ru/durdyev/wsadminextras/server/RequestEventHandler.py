@@ -121,10 +121,10 @@ class RequestEventHandler(RequestHandler):
     def parseParameters(self, parameterStr):
         parameters_dict = {}
         if parameterStr is not None:
-            regexp_params = re.findall("\[([aA-zZ0-9]+\:[aA-zZ0-9]+)\]", parameterStr)
+            regexp_params = re.findall("\[([aA-zZ0-9]+\:[aA-zZ0-9.-]+)\]", parameterStr)
             if regexp_params is not None:
                 for p in regexp_params:
-                    param_regexp = re.search("([aA-zZ0-9]+)\:([aA-zZ0-9]+)", p)
+                    param_regexp = re.search("([aA-zZ0-9]+)\:([aA-zZ0-9.-]+)", p)
                     if param_regexp is not None:
                         parameters_dict[param_regexp.group(1)] = param_regexp.group(2)
 
