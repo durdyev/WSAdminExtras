@@ -18,6 +18,7 @@ import sys
 import collections
 import time
 import thread
+import re
 # base server
 
 from xml.dom.minidom import parse
@@ -84,15 +85,22 @@ class BaseWSAdminExtrasServer(SocketServer.ThreadingMixIn, SocketServer.TCPServe
     def waitForCommand(self):
         while True:
             out = self.p.stdout.readline()
+            errors = re.search("([A-Z]{4}[0-9]{4}[E])", out)
             print(out)
+            if errors is not None:
+                self.p.stdin.write("\nprint('there are errors')\n")
+                self.p.stdin.flush()
+                while True:
+                    out = self.p.stdout.readline()
+                    print(out)
+                    if(out[:24] == 'wsadmin>there are errors'):
+                        break
             if(out[:9] == 'WASX7031I'):
                 print('end of loading')
-
-            if(out[:16] == 'wait for command' or out[:9] == 'WASX7031I' or out[:3] == 'OK:'):
+            if(out[:16] == 'wait for command' or out[:9] == 'WASX7031I' or errors is not None or out[:3] == 'OK:'):
                 while True:
                     if(len(self.commandQueue) > 0):
                         command = self.commandQueue.pop()
-                        #p.stdin.write('execfile(\'C:\\work\\IDEFeatures\\Python\\WSAdminWrapper\\bin\\command.jy\')\n')
                         self.p.stdin.write(command)
                         self.p.stdin.flush()
                         break

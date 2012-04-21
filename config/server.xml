@@ -1,7 +1,7 @@
 <?xml version="1.0" ?>
 <server>
 	<address>
-		localhost
+		0.0.0.0
 	</address>
 	<port>
 		1061
