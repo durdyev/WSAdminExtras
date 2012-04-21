@@ -115,7 +115,9 @@ class RequestEventHandler(RequestHandler):
         if regexp_parameters is not None:
             parameters = regexp_parameters.group(1).strip()
 
-        print(templateParser.generateScriptFromTemplate(template, self.parseParameters(parameters)))
+
+        command = templateParser.generateScriptFromTemplate(template, self.parseParameters(parameters), self.profile)
+        self.wsadminQueue.appendleft(command)
 
     # parse custom parameters
     def parseParameters(self, parameterStr):
