@@ -1,0 +1,3 @@
+#example AdminApplication.startApplicationOnSingleServer('neoflex.hmb.loanApplicationApp-3.2.2.3-SNAPSHOT', 'WPSServer', 'server1')
+AdminApplication.startApplicationOnSingleServer('%app_name%', '%node_name%', '%server_name%')
+print('wait for command')
