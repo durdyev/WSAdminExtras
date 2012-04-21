@@ -21,6 +21,7 @@ from ru.durdyev.wsadminextras.utils.ServerCodes import ServerCodes
 from ru.durdyev.wsadminextras.utils.NetUtils import NetUtils
 from ru.durdyev.wsadminextras.utils.ServerHeaders import ServerHeaders
 from ru.durdyev.wsadminextras.utils.XMLUtils import XMLUtils
+from ru.durdyev.wsadminextras.utils.TemplateParser import TemplateParser
 from ru.durdyev.wsadminextras.utils.AdditionalParameters import AdditionalParameters
 from ru.durdyev.wsadminextras.exceptions.HeadersNotSetException import HeadersNotSetException
 from ru.durdyev.wsadminextras.exceptions.ProfileNotFoundException import ProfileNotFoundException
@@ -127,6 +128,33 @@ class RequestEventHandler(RequestHandler):
                 print(errormessage)
                 logging.info(errormessage)
 
+    def CUSTOM_handler(self):
+        templateParser = TemplateParser()
+
+        regexp_template = re.search('.*Template:(.*).*', self.headers)
+        regexp_parameters = re.search('.*Parameters:(.*).*', self.headers)
+
+        template = None
+        parameters = None
+        if regexp_template is not None:
+            template = regexp_template.group(1).strip()
+        if regexp_parameters is not None:
+            parameters = regexp_parameters.group(1).strip()
+
+        print(templateParser.generateScriptFromTemplate(template, self.parseParameters(parameters)))
+
+    # parse custom parameters
+    def parseParameters(self, parameterStr):
+        parameters_dict = {}
+        if parameterStr is not None:
+            regexp_params = re.findall("\[([aA-zZ0-9]+\:[aA-zZ0-9]+)\]", parameterStr)
+            if regexp_params is not None:
+                for p in regexp_params:
+                    param_regexp = re.search("([aA-zZ0-9]+)\:([aA-zZ0-9]+)", p)
+                    if param_regexp is not None:
+                        parameters_dict[param_regexp.group(1)] = param_regexp.group(2)
+
+        return parameters_dict
 
     # deploy files to windows
     def deploy_win(self, parameters):

@@ -96,7 +96,6 @@ class BaseWSAdminExtrasServer(SocketServer.ThreadingMixIn, SocketServer.TCPServe
                         self.p.stdin.flush()
                         break
                     else:
-                        print('wait 1 second')
                         time.sleep(1)
 
     def commandGenerator(self):
@@ -127,7 +126,7 @@ class BaseWSAdminExtrasServer(SocketServer.ThreadingMixIn, SocketServer.TCPServe
         # getting parameters from profile configuration file.
         try:
             #TODO change host-port connection to profile
-            self.p = subprocess.Popen(parameters['was_home'] + "\\bin\\wsadmin.sh -host " + parameters['host'] + " -port " + parameters['port'] + " -user " + parameters['username'] + " -password " + parameters['password'] + " -lang jython ", shell=True, stdout=subprocess.PIPE, stdin=subprocess.PIPE)
+            self.p = subprocess.Popen(parameters['was_home'] + "/bin/wsadmin.sh -host " + parameters['host'] + " -port " + parameters['port'] + " -user " + parameters['username'] + " -password " + parameters['password'] + " -lang jython ", shell=True, stdout=subprocess.PIPE, stdin=subprocess.PIPE)
 
         except IOError as e:
             logging.info(e.strerror)

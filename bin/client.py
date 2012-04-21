@@ -20,7 +20,7 @@ import baseFunc
 from ru.durdyev.wsadminextras.utils.NetUtils import NetUtils
 from ru.durdyev.wsadminextras.utils.ServerHeaders import ServerHeaders
 
-HOST, PORT = 'localhost', 1061
+HOST, PORT = '127.0.0.1', 1061
 RESPONSE_LEN = 2
 delim_n = '\n'
 server_headers = ServerHeaders()
@@ -104,6 +104,28 @@ def main():
         request_data += "Content-type: plain-text"
         request_data += ' ' * (server_headers.headers_len - len(request_data))
         connection.sendall(request_data)
+
+    if key == '-custom':
+        # example
+        #-custom SimpleProfile uninstall "{ [node_name:node1], [server_name:server1], [application_name:loan-01] }"
+
+        profile_name = sys.argv[2]
+        template = sys.argv[3]
+        parameters = sys.argv[4]
+
+        connection = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        connection.connect((HOST, PORT))
+
+        request_data = "Command:CUSTOM" + delim_n
+        request_data += "Profile:" + profile_name + delim_n
+        request_data += "Content-length:" + str(len(parameters)) + delim_n
+        request_data += "Content-type:plain-text" + delim_n
+        request_data += "Template:" + template + delim_n
+        request_data += "Parameters:" + parameters + delim_n
+        request_data += ' ' * (server_headers.headers_len - len(request_data))
+
+        connection.sendall(request_data)
+        connection.close()
 
 if __name__ == '__main__':
     main()

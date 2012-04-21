@@ -28,7 +28,13 @@ def main():
     try:
         baseFunc.configure_logging()
         serverSettings = ServerSettings()
+    except IOError as e:
+        print('logging folder doesn\'t exist')
+        print('trying to create logging folder...')
+        if baseFunc.create_log_folder():
+            baseFunc.configure_logging()
 
+    try:
         logging.info('Starting a server')
         HOST = str(serverSettings.get_server_address())
         PORT = int(serverSettings.get_server_port())
@@ -40,12 +46,6 @@ def main():
         logging.info(('Server now running at ' + str(server.server_address)))
 
         server.serve_forever()
-
-    except IOError as e:
-        print('logging folder doesn\'t exist')
-        print('trying to create logging folder...')
-        if baseFunc.create_log_folder():
-            baseFunc.configure_logging()
     except KeyboardInterrupt as e:
         print("Server stoped.")
 
