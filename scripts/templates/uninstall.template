@@ -1,1 +1,3 @@
-AdminApp.install('%application_file_path%', '[-node %node_name% -cell %cell_name% -server %server_name% -appname %application_name%]')
+#AdminApplication.uninstallApplication('neoflex.hmb.loanApplicationApp-3.2.2.3-SNAPSHOT')
+AdminApplication.uninstallApplication('%app_name%')
+print('wait for command')
