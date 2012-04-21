@@ -1,1 +1,0 @@
-AdminApp.install('%application_file_path%', '[-node %node_name% -cell %cell_name% -server %server_name% -appname %application_name%]')

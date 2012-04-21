@@ -39,7 +39,7 @@ class TemplateParser(object):
                     else:
                         replace_param = params[parameter]
                         fileContent = fileContent.replace("%" + parameter + "%", replace_param)
-                return fileContent
+                return fileContent+'\n'
         except IOError as e:
             print("Cant't read template file from scripts. See logs.")
             logging.error(e.message)

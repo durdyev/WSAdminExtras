@@ -88,16 +88,16 @@ class BaseWSAdminExtrasServer(SocketServer.ThreadingMixIn, SocketServer.TCPServe
             errors = re.search("([A-Z]{4}[0-9]{4}[E])", out)
             print(out)
             if errors is not None:
-                self.p.stdin.write("\nprint('there are errors')\n")
+                self.p.stdin.write("print('there are errors')\n")
                 self.p.stdin.flush()
                 while True:
                     out = self.p.stdout.readline()
                     print(out)
-                    if(out[:24] == 'wsadmin>there are errors'):
+                    if "there are errors" in out:
                         break
             if(out[:9] == 'WASX7031I'):
                 print('end of loading')
-            if(out[:16] == 'wait for command' or out[:9] == 'WASX7031I' or errors is not None or out[:3] == 'OK:'):
+            if(out[:16] == 'wait for command' or out[:9] == 'WASX7031I' or errors is not None):
                 while True:
                     if(len(self.commandQueue) > 0):
                         command = self.commandQueue.pop()
