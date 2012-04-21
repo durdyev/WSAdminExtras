@@ -32,17 +32,8 @@ class RequestEventHandler(RequestHandler):
     #server codes
     _server_codes = ServerCodes()
 
-    # xml utils
-    _xml_utils = XMLUtils()
-
     # additional parameters
     _additional_params = AdditionalParameters()
-
-    # path to jython script file linux
-    _jython_nix = "sh ../scripts/jython.sh"
-
-    # path to jython script win
-    _jython_win = "..\scripts\jython.bat"
 
     #trying to upload a file
     def UPLOAD_handler(self):
@@ -75,23 +66,6 @@ class RequestEventHandler(RequestHandler):
         f.close()
 
         self.send_response(response_headers, None)
-
-    # deploy uploaded file to server
-    def DEPLOY_handler(self):
-        logging.info('trying to deploy files from profile %s' % self.profile)
-        self.wsadminQueue.appendleft('execfile(\'c:\\work\\command.jy\')\n')
-        #deploy_files = self.request.recv(self.content_len)
-        #deploy_file_list = deploy_files.split(',')
-        parameters = {}
-
-        # files
-        #parameters['files'] = deploy_file_list
-
-        # call deploy script to specific OS
-        #if (sys.platform == 'win32'):
-        #self.deploy_win(parameters)
-        #else:
-        #self.deploy_nix(parameters)
 
     def FILELIST_handler(self):
         logging.info(('Trying to get file list from %s temp directory.' % self.profile))
@@ -155,110 +129,6 @@ class RequestEventHandler(RequestHandler):
                         parameters_dict[param_regexp.group(1)] = param_regexp.group(2)
 
         return parameters_dict
-
-    # deploy files to windows
-    def deploy_win(self, parameters):
-        deploy_file_list = parameters['files']
-
-        # trying to deploy all files
-        if len(deploy_file_list) <= 1 and deploy_file_list[0] == 'ALL':
-            logging.info("Trying to deploy all files in %s temp directory", self.profile)
-
-            # getting parameters from profile configuration file.
-            try:
-                if parameters['mode'] == self._additional_params.mode_reinstall:
-                    profile_temp_path = '../profiles/' + self.profile + '/tmp/'
-                    files = os.listdir(profile_temp_path)
-                    for file in files:
-                        # uninstall
-                        abs_file_path = os.path.abspath(profile_temp_path + file)
-                        file_name = os.path.splitext(file)[0]
-                        command = self._jython_win + " "
-                        command += parameters['was_home'] + " "
-                        command += parameters['host'] + " "
-                        command += parameters['port'] + " "
-                        command += parameters['username'] + " "
-                        command += parameters['password'] + " "
-                        command += self._additional_params.mode_uninstall + " "
-                        command += '"%s" ' % abs_file_path.replace('\\','/')
-                        command += '"%s" ' % file_name
-                        command += ' "[ ]" '
-                        os.system(command)
-
-                        # install
-                        abs_file_path = os.path.abspath(profile_temp_path + file)
-                        file_name = os.path.splitext(file)[0]
-                        command = self._jython_win + " "
-                        command += parameters['was_home'] + " "
-                        command += parameters['host'] + " "
-                        command += parameters['port'] + " "
-                        command += parameters['username'] + " "
-                        command += parameters['password'] + " "
-                        command += self._additional_params.mode_install + " "
-                        command += '"%s" ' % abs_file_path.replace('\\','/')
-                        command += '"%s" ' % file_name
-                        command += ' "[-appname %s]" ' % file_name.strip()
-                        os.system(command)
-            except IOError as e:
-                logging.info(e.strerror)
-                print("Cant't configuration file in profile %s " % self.profile)
-                #trying to deploy list of specific files
-        else:
-            for file in deploy_file_list:
-                logging.info("Trying to deploy %s", file)
-                print('deploy ' + file.strip() + ' to ws')
-
-    #deploy files to unix
-    def deploy_nix(self, parameters):
-        deploy_file_list = parameters['files']
-
-        # trying to deploy all files
-        if len(deploy_file_list) <= 1 and deploy_file_list[0] == 'ALL':
-            logging.info("Trying to deploy all files in %s temp directory", self.profile)
-
-            # getting parameters from profile configuration file.
-            try:
-                if parameters['mode'] == self._additional_params.mode_reinstall:
-                    profile_temp_path = '../profiles/' + self.profile + '/tmp/'
-                    files = os.listdir(profile_temp_path)
-                    for file in files:
-                        # uninstall
-                        abs_file_path = os.path.abspath(profile_temp_path + file)
-                        file_name = os.path.splitext(file)[0]
-                        command = self._jython_nix + " "
-                        command += parameters['was_home'] + " "
-                        command += parameters['host'] + " "
-                        command += parameters['port'] + " "
-                        command += parameters['username'] + " "
-                        command += parameters['password'] + " "
-                        command += self._additional_params.mode_uninstall + " "
-                        command += '"%s" ' % abs_file_path
-                        command += '"%s" ' % file_name
-                        command += ' "[ ]" '
-                        os.system(command)
-
-                        # install
-                        abs_file_path = os.path.abspath(profile_temp_path + file)
-                        file_name = os.path.splitext(file)[0]
-                        command = self._jython_nix + " "
-                        command += parameters['was_home'] + " "
-                        command += parameters['host'] + " "
-                        command += parameters['port'] + " "
-                        command += parameters['username'] + " "
-                        command += parameters['password'] + " "
-                        command += self._additional_params.mode_install + " "
-                        command += '"%s" ' % abs_file_path
-                        command += '"%s" ' % file_name
-                        command += ' "[-appname %s]" ' % file_name.strip()
-                        os.system(command)
-            except IOError as e:
-                logging.info(e.strerror)
-                print("Cant't configuration file in profile %s " % self.profile)
-                #trying to deploy list of specific files
-        else:
-            for file in deploy_file_list:
-                logging.info("Trying to deploy %s", file)
-                print('deploy ' + file.strip() + ' to ws')
 
     @property
     def server_codes(self):
