@@ -1,0 +1,5 @@
+#AdminApplication.uninstallApplication('neoflex.hmb.loanApplicationApp-3.2.2.3-SNAPSHOT')
+AdminApplication.uninstallApplication('%app_name%')
+AdminApplication.installAppWithNodeAndServerOptions('%app_name%', '%application_path%', '%node_name%', '%server_name%')
+AdminApplication.startApplicationOnSingleServer('%app_name%', '%node_name%', '%server_name%')
+print('wait for command')
