@@ -1,21 +1,30 @@
 This little server should help you to work with Websphere Application Server.
 
+INSTALLATION:
+
+First of all you need to install Python 2.7, PyQt4 module.
+Python 2.7 - http://python.org/download/
+PyQt4 - http://www.riverbankcomputing.co.uk/software/pyqt/download
+
+or if you use some of linux distributions you can simply run commands like this:
+- yum install python
+- yum install PyQt4
+
 Usage:
 cd bin
-python createProfile.py -profileName simple
+python createProfile.py -profileName SimpleProfile
 
-then you should configure simple profile.
+Then you should configure simple profile. Open profiles/<profile_name>/config/config.xml.
 
-python startServer.py
-
-This version is not working yet and in active development stage.
-Stay tuned.
+When configuration finished run in bin directory
+- python startServer.py
 
 At goal:
--deploy to server throw wsadmin and jython.
 -stop/start server
 -stop/start operating system services
 -clear server logs
 -hot deployment
 -maven plugin
+
+Stay tuned.
 
