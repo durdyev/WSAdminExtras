@@ -11,31 +11,22 @@
 #    You should have received a copy of the GNU General Public License
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-class ServerCommands(object):
-    # when client trying to upload a file.
-    _command_UPLOAD = "UPLOAD"
+class ServerMessages(object):
 
-    _command_DEPLOY = "DEPLOY"
+    # file uploaded
+    _file_uploaded_msg = "File %s succesfully uploaded."
 
-    _command_CUSTOM = "CUSTOM"
-
-    _command_CLEARLOGS = "CLEARLOGS"
+    # custom command completed
+    _custom_command_completed_msg = "Custom command completed"
 
     def __init__(self):
         pass
 
     @property
-    def command_UPLOAD(self):
-        return self._command_UPLOAD
+    def file_uploaded_msg(self):
+        return self._file_uploaded_msg
 
     @property
-    def command_DEPLOY(self):
-        return self._command_DEPLOY
+    def custom_command_completed_msg(self):
+        return self._custom_command_completed_msg
 
-    @property
-    def command_CUSTOM(self):
-        return self._command_CUSTOM
-
-    @property
-    def command_CLEARLOGS(self):
-        return self.command_CLEARLOGS

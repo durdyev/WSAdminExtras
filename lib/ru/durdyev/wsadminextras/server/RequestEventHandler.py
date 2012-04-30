@@ -29,8 +29,6 @@ from ru.durdyev.wsadminextras.exceptions.ProfileNotFoundException import Profile
 #base event handler class
 #when server recive a command, this handler call a command handler method
 class RequestEventHandler(RequestHandler):
-    #server codes
-    _server_codes = ServerCodes()
 
     # additional parameters
     _additional_params = AdditionalParameters()
@@ -65,7 +63,7 @@ class RequestEventHandler(RequestHandler):
             f.write(file_data)
         f.close()
 
-        self.send_response(response_headers, None)
+        self.send_response(self.server_codes.code_ok, self.server_messages.file_uploaded_msg)
 
     def FILELIST_handler(self):
         logging.info(('Trying to get file list from %s temp directory.' % self.profile))
@@ -80,6 +78,9 @@ class RequestEventHandler(RequestHandler):
 
             if len(serializable_files) > 0 :
                 self.request.sendall(serializable_files)
+
+        #sending request
+        self.send_response()
 
     def CLEARLOGS_handler(self):
         logging.info('Trying to clear logs in profile %s' % self.profile)
@@ -131,7 +132,3 @@ class RequestEventHandler(RequestHandler):
                         parameters_dict[param_regexp.group(1)] = param_regexp.group(2)
 
         return parameters_dict
-
-    @property
-    def server_codes(self):
-        return self._server_codes

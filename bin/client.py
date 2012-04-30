@@ -20,7 +20,7 @@ import baseFunc
 from ru.durdyev.wsadminextras.utils.NetUtils import NetUtils
 from ru.durdyev.wsadminextras.utils.ServerHeaders import ServerHeaders
 
-HOST, PORT = '192.168.40.160', 1061
+HOST, PORT = 'localhost', 1061
 RESPONSE_LEN = 2
 delim_n = '\n'
 server_headers = ServerHeaders()
@@ -47,6 +47,7 @@ def main():
         request_data += ' ' * (server_headers.headers_len - len(request_data))
         connection.sendall(request_data)
         connection.sendall(f.read())
+        print(connection.recv(100))
         connection.close()
         f.close()
 

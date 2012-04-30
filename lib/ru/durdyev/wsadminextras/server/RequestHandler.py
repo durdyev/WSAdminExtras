@@ -13,16 +13,17 @@
 
 import re
 import logging
-import SocketServer
+from SocketServer import  StreamRequestHandler
 from ru.durdyev.wsadminextras.exceptions.HeadersNotSetException import HeadersNotSetException
 from ru.durdyev.wsadminextras.utils.ServerCodes import ServerCodes
 from ru.durdyev.wsadminextras.utils.ServerCommands  import ServerCommands
 from ru.durdyev.wsadminextras.exceptions.BaseException import BaseException
 from ru.durdyev.wsadminextras.utils.NetUtils import NetUtils
 from ru.durdyev.wsadminextras.utils.ServerHeaders import ServerHeaders
+from ru.durdyev.wsadminextras.utils.ServerMessages import ServerMessages
 
 # base request handler class.
-class RequestHandler(SocketServer.StreamRequestHandler):
+class RequestHandler(StreamRequestHandler):
     #request_id
     _request_id = None
 
@@ -44,6 +45,7 @@ class RequestHandler(SocketServer.StreamRequestHandler):
     _server_commands = ServerCommands()
     _server_codes = ServerCodes()
     _server_headers = ServerHeaders()
+    _server_messages = ServerMessages()
 
     _wsadminQueue = None
 
@@ -65,19 +67,19 @@ class RequestHandler(SocketServer.StreamRequestHandler):
                     self._content_len = regexp_content_len.group(1).strip()
                 else:
                     raise HeadersNotSetException(self.server_codes.code_headers_not_recived,
-                                                 'Content-len not is not recived.')
+                                                    'Content-len not is not recived.')
 
                 if regexp_content_type is not None:
                     self._content_type = regexp_content_type.group(1).strip()
                 else:
                     raise HeadersNotSetException(self.server_codes.code_headers_not_recived,
-                                                 'Content-type is not recived')
+                                                    'Content-type is not recived')
 
                 if regexp_profile is not None:
                     self._profile = regexp_profile.group(1).strip()
                 else:
                     raise HeadersNotSetException(self.server_codes.code_headers_not_recived,
-                                                 'Profile not recived.')
+                                                    'Profile not recived.')
 
                 if regexp_headers is not None:
                     comand_code = regexp_headers.group(1).strip()
@@ -86,19 +88,19 @@ class RequestHandler(SocketServer.StreamRequestHandler):
                     else:
                         logging.info('command doesn\'t set. ')
                         raise HeadersNotSetException(server_codes.code_headers_not_recived,
-                                                     'command is not set.')
+                                                        'command is not set.')
 
                     commandHandler = getattr(self, self.command)
                     if commandHandler is not None:
                         commandHandler()
                     else:
-                        self.send_error(server_codes.code_headers_not_recived)
+                        self.send_response(self.server_codes.code_headers_not_recived)
 
                 return
             except BaseException as e:
                 #headers not recived
                 logging.info('Headers not set error.' + e.msg)
-                self.send_error(self.server_codes.code_headers_not_recived)
+                self.send_response(self.server_codes.code_headers_not_recived)
                 return
 
     #recv bytes
@@ -124,11 +126,14 @@ class RequestHandler(SocketServer.StreamRequestHandler):
             self.request.send(data)
 
     #sending an error
-    def send_error(self, error_code):
+    def send_response(self, code, message=None):
         response_data = self.request_id
         response_data += self.request_id + NetUtils.delimeter_n()
-        response_data += self.server_headers.response_code + error_code
+        response_data += self.server_headers.response_code + code
         response_data += str(NetUtils.delimeter_n())
+        if message is not None:
+            response_data += self.server_headers.response_message + message
+            response_data += str(NetUtils.delimeter_n())
         self.request.send(response_data)
 
     @property
@@ -170,6 +175,10 @@ class RequestHandler(SocketServer.StreamRequestHandler):
     @property
     def server_commands(self):
         return self._server_commands
+
+    @property
+    def server_messages(self):
+        return self._server_messages
 
     @property
     def wsadminQueue(self):

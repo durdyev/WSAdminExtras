@@ -14,7 +14,7 @@
 #server headers
 class ServerHeaders(object):
     #headers len is 300 bytes
-    _headers_len = 300
+    _headers_len = 1024
 
     @property
     def headers_len(self):
@@ -47,5 +47,9 @@ class ServerHeaders(object):
     @property
     def response_code(self):
         return 'Response-code:'
-    
+
+    @property
+    def response_message(self):
+        return 'Response-message:'
+
     
